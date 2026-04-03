@@ -1,40 +1,58 @@
 # core/executor.py
-from typing import List, Optional, Any
-from agents import get_agent_by_type
-from .compact_system import run_full_compact
-from .session_memory import SESSION_MEMORY
-from olmx_client import model_call
+import time
+from core.micro_compact import dehydration_strategy
+from core.compact_system import run_auto_compact
+from core.session_memory import session_mem
+from utils import get_timestamp
 
 class AgentExecutor:
     """
-    智能体执行引擎：模拟 TypeScript 中的 runAgent.ts
-    负责：环境感知、权限校验、压缩调度、API 执行
+    对应 AgentTool.tsx 协调器模式
+    实现提示词分层 (Prompt Layering) 和 运行循环
     """
-    def __init__(self, agent_type: str):
-        self.agent_def = get_agent_by_type(agent_type)
-        self.messages: List[dict] = []
+    def __init__(self, agent_config, client):
+        self.agent_config = agent_config
+        self.client = client
+        self.messages = []
+        self.last_interaction = time.time()
 
-    async def execute(self, user_query: str, extra_context: Any = None):
-        print(f"🔄 [Agent: {self.agent_def.agent_type}] 正在执行指令...")
+    def _build_layered_prompt(self, user_query: str):
+        """
+        提示词分层架构:
+        1. 静态系统层 (Static)
+        2. 环境感知层 (Env)
+        3. 动态记忆层 (Memory)
+        4. 任务特定层 (Task)
+        """
+        env_details = f"CWD: {self.agent_config.get('cwd', '/')}\nTime: {get_timestamp()}"
+        memory_details = session_mem.get_full_context_string()
         
-        # 1. 动态构造并刷新 System Prompt
-        sys_prompt = self.agent_def.get_system_prompt(extra_context)
-        
-        # 2. 注入长期持久化记忆 (如有)
-        if SESSION_MEMORY.memory:
-            sys_prompt += f"\n\n[全局记忆]\n{SESSION_MEMORY.memory}"
-            
-        # 在发送前，确保 system 消息始终在头部
-        self.messages = [m for m in self.messages if m["role"] != "system"]
-        self.messages.insert(0, {"role": "system", "content": sys_prompt})
-        self.messages.append({"role": "user", "content": user_query})
+        system_prompt = f"""
+{self.agent_config['system_prompt']}
 
-        # 3. 在 API 请求前执行上下文治理 (压缩系统)
-        self.messages = await run_full_compact(self.messages, model_call)
+=== ENVIRONMENT ===
+{env_details}
 
-        # 4. 执行推理并获取返回
-        response_text = await model_call(self.messages)
+{memory_details}
+"""
+        return system_prompt
+
+    async def run_turn(self, user_input: str):
+        # 1. 微压缩 (物理清理)
+        self.messages = dehydration_strategy(self.messages)
         
-        # 记录 Assistant 的回复到内存
-        self.messages.append({"role": "assistant", "content": response_text})
-        return response_text
+        # 2. 全量压缩检测 (AI 总结)
+        self.messages = await run_auto_compact(self.messages, self.client)
+        
+        # 3. 构造分层提示词
+        system_p = self._build_layered_prompt(user_input)
+        
+        # 4. 执行推理循环 (省略工具调用逻辑，仅展示核心状态流)
+        current_payload = [{"role": "system", "content": system_p}] + self.messages + [{"role": "user", "content": user_input}]
+        response = await self.client.generate(current_payload)
+        
+        self.messages.append({"role": "user", "content": user_input})
+        self.messages.append({"role": "assistant", "content": response})
+        self.last_interaction = time.time()
+        
+        return response
