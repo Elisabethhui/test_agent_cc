@@ -17,10 +17,23 @@ def get_explore_prompt(context=None) -> str:
 
 直接报告你的发现，不要尝试创建物理报告文件。"""
 
-EXPLORE_AGENT = AgentDefinition(
+EXPLORE_AGENT0 = AgentDefinition(
     agent_type="Explore",
     when_to_use="用于快速定位文件、搜索关键字或回答有关代码库如何工作的问题。",
     disallowed_tools=[CONFIG.FILE_EDIT, CONFIG.FILE_WRITE, CONFIG.AGENT_TOOL],
     omit_claude_md=True,
     get_system_prompt=get_explore_prompt
+)
+
+# agents/explore_agent.py
+from .base import BaseAgent
+from config import CONFIG
+
+EXPLORE_AGENT = BaseAgent(
+    name="ExploreAgent",
+    agent_type="explorer",
+    system_prompt="""你现在是 Claude Code 的搜索专家 (Explore Agent)。
+你的职责是利用各种搜索工具（如 grep, glob, ls）深入了解代码库的结构和逻辑。
+你目前处于只读模式，严禁对文件进行任何修改。""",
+    disallowed_tools=[CONFIG.FILE_WRITE, CONFIG.FILE_EDIT, CONFIG.BASH]
 )

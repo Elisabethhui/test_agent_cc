@@ -20,10 +20,21 @@ def get_plan_prompt(context=None) -> str:
 ### 实施关键文件
 列出 3-5 个最重要的文件路径。"""
 
-PLAN_AGENT = AgentDefinition(
+PLAN_AGENT0 = AgentDefinition(
     agent_type="Plan",
     when_to_use="用于设计实施策略和规划任务。返回分步计划，识别关键文件。",
     disallowed_tools=[CONFIG.FILE_EDIT, CONFIG.FILE_WRITE, CONFIG.AGENT_TOOL],
     omit_claude_md=True,
     get_system_prompt=get_plan_prompt
+)
+
+# agents/plan_agent.py
+from .base import BaseAgent
+
+PLAN_AGENT = BaseAgent(
+    name="PlanAgent",
+    agent_type="planner",
+    system_prompt="""你现在是 Claude Code 的架构规划专家 (Plan Agent)。
+你的职责是制定详细的实施计划，目前处于只读模式。""",
+    disallowed_tools=[CONFIG.FILE_WRITE, CONFIG.BASH]
 )

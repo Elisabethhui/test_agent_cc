@@ -1,20 +1,45 @@
 # config.py
-import os
+from dataclasses import dataclass, field
+from typing import Set
 
-# 模型配置
-MODEL_NAME = "qwen2.5-7b-instruct" # 或其他本地模型
-API_BASE = "http://localhost:8000/v1"
-API_KEY = "w2hqq0809"
+@dataclass
+class CompactConfig:
+    """全局配置，定义 Token 阈值、时间窗口和工具映射"""
+    # 消息治理策略
+    MIN_RETAIN_TOKENS: int = 4000      # 压缩后至少保留的 Token 
+    MIN_RETAIN_MESSAGES: int = 5       # 压缩时保留的最近消息轮次
+    MAX_RETAIN_TOKENS: int = 12000     # 触发 AI 总结的硬阈值 (测试时可调低)
+    
+    # 时间与物理清理
+    TIME_GAP_THRESHOLD_MINS: int = 30  # 超过 30 分钟停顿触发微压缩
+    KEEP_RECENT_TOOLS_COUNT: int = 2   # 物理清理时保留的最新工具结果数
+    CLEARED_STUB: str = "[内容已物理剔除以节省上下文空间]"
+    
+    # 作用域路径模拟
+    USER_MEM_DIR: str = "~/.claude/agent-memory/"
+    PROJ_MEM_DIR: str = ".claude/agent-memory/"
+    LOCAL_MEM_DIR: str = ".claude/agent-memory-local/"
 
-# 压缩阈值 (根据源码 apiMicrocompact.ts 映射)
-MAX_CONTEXT_TOKENS = 120000  # 触发全量压缩的阈值
-MICRO_COMPACT_THRESHOLD = 2000  # 单个工具结果超过此字符则物理脱水
-GAP_MINUTES_THRESHOLD = 30 # 超过30分钟未互动触发自动清理
+    # 工具名定义
+    BASH = "bash"
+    FILE_READ = "file_read"
+    FILE_WRITE = "file_write"
+    FILE_EDIT = "file_edit"
+    GREP = "grep"
+    GLOB = "glob"
 
-# 记忆存储路径 (Scoped Memory)
-USER_CONFIG_PATH = os.path.expanduser("~/.claude/config.json")
-PROJECT_CONFIG_PATH = "./.claude/memory.json"
-LOCAL_STATE_PATH = "./.claude/local_state.json"
+    # 系统工具名称映射 (映射自 TS 代码中的常量)
+    BASH_TOOL = "bash"
+    FILE_READ = "file_read"
+    FILE_WRITE = "file_write"
+    FILE_EDIT = "file_edit"
+    GLOB_TOOL = "glob"
+    GREP_TOOL = "grep"
+    AGENT_TOOL = "agent"
 
-# 工具黑名单 (微压缩时优先清理这些工具的输出)
-TOOLS_TO_DEHYDRATE = ["file_read", "bash", "ls", "grep"]
+
+CONFIG = CompactConfig()
+
+# 允许物理剔除内容的工具列表
+CLEARABLE_TOOLS = {CONFIG.BASH, CONFIG.FILE_READ, CONFIG.GREP, CONFIG.GLOB}
+

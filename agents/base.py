@@ -16,3 +16,21 @@ class AgentDefinition:
     model: str = "inherit"  # 模型选择 (inherit, sonnet, haiku)
     color: Optional[str] = None # UI 显示颜色
     omit_claude_md: bool = False # 是否忽略 CLAUDE.md 上下文
+
+
+
+@dataclass
+class BaseAgent:
+    """
+    统一的智能体定义类。
+    注意：属性名必须是 system_prompt，以适配 executor.py
+    """
+    name: str
+    agent_type: str
+    system_prompt: str  # 确保这是一个属性
+    disallowed_tools: List[str] = field(default_factory=list)
+    fork_directive: Optional[str] = None
+
+    # 为了兼容你报错中提到的 get_system_prompt，我们加一个 alias
+    def get_system_prompt(self) -> str:
+        return self.system_prompt

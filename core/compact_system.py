@@ -1,35 +1,34 @@
 # core/compact_system.py
-from config import MAX_CONTEXT_TOKENS
+from config import CONFIG
 from utils import count_tokens
 
-# 源码中的 NO_TOOLS_PREAMBLE 策略
-SUMMARIZE_PREAMBLE = "=== CRITICAL: NO TOOLS ALLOWED ===\n你现在的任务是总结对话历史。禁止调用任何工具！"
-SUMMARIZE_POSTAMBLE = "请注意：你必须仅输出总结文本，禁止尝试执行代码或读取文件。总结必须包含之前的关键决策和待办事项。"
+# 复刻源码中的 Instruction Sandwiching (指令夹心饼干)
+SUMMARIZE_PREAMBLE = "=== SYSTEM: SUMMARY MODE ===\n禁止使用工具！总结以下对话历史。保持技术细节和文件路径的准确性。"
+SUMMARIZE_POSTAMBLE = "注意：你必须仅输出总结文本。禁止产生任何工具调用的思考。"
 
 async def run_auto_compact(messages: list, client) -> list:
     """
-    全量总结逻辑 (复刻 compact.ts):
-    利用 '指令夹心饼干' 强制模型生成纯文本摘要。
+    全量逻辑压缩 (Macro-Compaction)：
+    当 Token 超过 MAX_RETAIN_TOKENS 时，将旧历史替换为一份 AI 摘要。
     """
-    total_tokens = sum(count_tokens(str(m)) for m in messages)
+    total_tokens = sum(count_tokens(m.get("content", "")) for m in messages)
     
-    if total_tokens < MAX_CONTEXT_TOKENS:
+    if total_tokens < CONFIG.MAX_RETAIN_TOKENS:
         return messages
 
-    print("⚠️ Context overflow! Running AI compaction...")
+    print(f"[Core] Token 水位 ({total_tokens}) 触发 AI 全量总结...")
     
-    # 构造夹心饼干 Payload
-    summary_prompt = [
+    # 构造夹心饼干提示词 Payloads
+    summary_messages = [
         {"role": "system", "content": SUMMARIZE_PREAMBLE},
-        {"role": "user", "content": f"请总结以下对话历史：\n{str(messages)}"},
+        {"role": "user", "content": f"请对之前的任务执行过程做一份精简摘要：\n{str(messages)}"},
         {"role": "system", "content": SUMMARIZE_POSTAMBLE}
     ]
     
-    summary_text = await client.generate(summary_prompt)
+    summary_text = await client.generate(summary_messages)
     
-    # 替换旧历史
-    new_history = [
-        {"role": "system", "content": f"=== CONTEXT SUMMARY (Compacted) ===\n{summary_text}"},
-        {"role": "assistant", "content": "历史记录已压缩。我已记住之前的关键结论。"}
+    # 返回压缩后的对话起始状态
+    return [
+        {"role": "system", "content": f"--- 上下文摘要 (已压缩) ---\n{summary_text}"},
+        {"role": "assistant", "content": "历史记录已归档。我已完全掌握之前的进度。"}
     ]
-    return new_history

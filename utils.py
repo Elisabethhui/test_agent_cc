@@ -4,6 +4,8 @@ import math
 from datetime import datetime, timezone
 # utils.py
 import time
+# utils.py
+from config import CONFIG
 def estimate_tokens(text: str | list | dict) -> int:
     """
     估算内容的 Token 数量 (工业级粗略计算：字符数 / 3.5)
@@ -32,13 +34,18 @@ def is_tool_use(block: dict) -> bool:
 
 
 def count_tokens(text: str) -> int:
-    # 模拟简单计数，实际可使用 tiktoken 或 model-specific tokenizer
-    return len(text) // 4
+    """
+    估算文本的 Token 数量。
+    参考 Claude Code 中的估算逻辑，这里使用字符数除以 4。
+    """
+    if not text:
+        return 0
+    return len(str(text)) // 4
 
-def get_timestamp() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-def is_stale(last_interaction_time: float, threshold_minutes: int) -> bool:
-    """模拟 microCompact.ts 中的时间感知逻辑"""
-    elapsed = (time.time() - last_interaction_time) / 60
-    return elapsed > threshold_minutes
+def is_context_stale(last_ts: float) -> bool:
+    """
+    判断当前对话是否超过了设定的时间窗口 (30分钟)。
+    用于触发基于时间的自动微压缩。
+    """
+    elapsed_mins = (time.time() - last_ts) / 60
+    return elapsed_mins > CONFIG.TIME_GAP_THRESHOLD_MINS

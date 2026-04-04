@@ -23,10 +23,25 @@ def get_verification_prompt(context=None) -> str:
 
 报告末尾必须输出：VERDICT: PASS | FAIL | PARTIAL"""
 
-VERIFICATION_AGENT = AgentDefinition(
+VERIFICATION_AGENT0 = AgentDefinition(
     agent_type="verification",
     when_to_use="用于在改动后验证实现是否正确。寻找 Bug、运行测试并给出审计结论。",
     color="red",
     disallowed_tools=[CONFIG.FILE_EDIT, CONFIG.FILE_WRITE],
     get_system_prompt=get_verification_prompt
+)
+
+
+# agents/verification_agent.py
+from .base import BaseAgent
+from config import CONFIG
+
+VERIFICATION_AGENT = BaseAgent(
+    name="VerificationAgent",
+    agent_type="verifier",
+    system_prompt="""你现在是 Claude Code 的审计专家 (Verification Agent)。
+你的职责是检查代码逻辑漏洞、运行单元测试并确保方案的正确性。
+你具备对抗性思维，需要寻找实现方案中最后 20% 可能存在的 Bug。""",
+    # 审计专家通常需要运行测试脚本，所以允许使用 BASH 但通常限制文件编辑
+    disallowed_tools=[CONFIG.FILE_EDIT]
 )
