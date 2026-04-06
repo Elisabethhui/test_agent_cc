@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-04-06",
+  "repo_root": "/Users/huguoqing/zzzhu/code/exp/RAG/project1/context_system",
+  "files": {
+    "root": {
+      "__init__.py": "Package init",
+      "main.py": "Entry point for the agent system",
+      "create.py": "Project creation/bootstrapping script",
+      "olmx_client.py": "LLM client wrapper for LangChain-compatible APIs",
+      "config.py": "Global configuration with token thresholds and tool mappings",
+      "utils.py": "Utility functions",
+      "README.md": "Project documentation"
+    },
+    "agents": {
+      "__init__.py": "Agent registry and initialization",
+      "base.py": "Base agent class",
+      "plan_agent.py": "Plan/Architect agent for high-level planning",
+      "explore_agent.py": "Explore agent for code base exploration",
+      "general_agent.py": "General purpose agent for task execution",
+      "guide_agent.py": "Guide agent for user guidance",
+      "verification_agent.py": "Verification agent for checking agent outputs",
+      "statusline_agent.py": "Status line agent for terminal output",
+      "coordinator_agent.py": "Coordinator agent for orchestrating sub-agents"
+    },
+    "core": {
+      "__init__.py": "Core module init",
+      "executor.py": "Agent executor that runs tasks",
+      "session_memory.py": "Singleton memory store for cross-agent state",
+      "compact_system.py": "AI-based context compression system",
+      "micro_compact.py": "Micro-compaction for cleaning up tool outputs",
+      "grouping.py": "Code/file grouping logic",
+      "compact_system.py": "Reference to cc-mini compact implementation"
+    },
+    "cc-mini": {
+      "pyproject.toml": "Project metadata and dependencies",
+      "README.md": "cc-mini project documentation",
+      "src/core/main.py": "CLI entry point and REPL",
+      "src/core/engine.py": "Core streaming API loop",
+      "src/core/llm.py": "LLM client wrapper",
+      "src/core/config.py": "Configuration loading and validation",
+      "src/core/context.py": "System prompt builder",
+      "src/core/commands.py": "Slash command system",
+      "src/core/session.py": "Session persistence and resume",
+      "src/core/compact.py": "Context compression logic",
+      "src/core/coordinator.py": "Coordinator mode for parallel workers",
+      "src/core/worker_manager.py": "Background worker lifecycle management",
+      "src/core/skills.py": "Skill loader and registry",
+      "src/core/permissions.py": "Permission checking system",
+      "src/core/cost_tracker.py": "Token usage tracking",
+      "src/core/_keylistener.py": "Keyboard input handling",
+      "src/core/buddy/types.py": "Buddy companion types",
+      "src/core/buddy/storage.py": "Buddy state persistence",
+      "src/core/buddy/sprites.py": "ASCII sprite definitions",
+      "src/core/buddy/render.py": "Terminal rendering",
+      "src/core/buddy/prompt.py": "Buddy prompt management",
+      "src/core/buddy/companion.py": "Buddy companion logic",
+      "src/core/buddy/commands.py": "Buddy slash commands",
+      "src/core/buddy/animator.py": "ASCII animation engine",
+      "src/core/buddy/poke_game/types.py": "Pokemon game types",
+      "src/core/buddy/poke_game/state.py": "Pokemon game state",
+      "src/core/buddy/poke_game/render.py": "Pokemon game rendering",
+      "src/core/buddy/poke_game/persistence.py": "Pokemon game save/load",
+      "src/core/buddy/poke_game/narrator.py": "Game narrator",
+      "src/core/buddy/poke_game/commands.py": "Game commands",
+      "src/core/buddy/poke_game/battle.py": "Pokemon battle logic",
+      "src/core/buddy/poke_game/badges.py": "Badge collection system",
+      "src/core/buddy/poke_game/lockfile.py": "Lockfile management",
+      "src/core/buddy/poke_game/events.py": "Game events",
+      "src/core/buddy/poke_game/loop.py": "Game loop",
+      "src/core/buddy/observer.py": "Buddy observer",
+      "src/core/buddy/mood.py": "Buddy mood tracking",
+      "src/core/buddy/__init__.py": "Buddy module init"
+    },
+    "scripts": {
+      "generate_scan_files.py": "Script to generate file scan results"
+    },
+    "tools": {
+      "__init__.py": "Tool module init",
+      "bash_tool.py": "Bash command execution wrapper",
+      "file_tool.py": "File operations abstraction"
+    },
+    "cc-mini/src/core/tools": {
+      "bash.py": "Bash tool implementation",
+      "file_read.py": "File reading tool",
+      "file_write.py": "File writing tool",
+      "file_edit.py": "File editing tool",
+      "glob.py": "Glob pattern matching tool",
+      "grep.py": "File search/grep tool",
+      "ask_user.py": "User confirmation prompt",
+      "agent.py": "Agent tool for spawning sub-agents",
+      "plan_tools.py": "Plan-related tool templates"
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "modules": [
+    {
+      "name": "AgentSystem",
+      "description": "Multi-agent orchestration system with different agent roles",
+      "entry_file": "agents/__init__.py",
+      "core_files": [
+        "agents/base.py",
+        "agents/plan_agent.py",
+        "agents/explore_agent.py",
+        "agents/general_agent.py",
+        "agents/verification_agent.py",
+        "agents/guide_agent.py",
+        "agents/statusline_agent.py",
+        "agents/coordinator_agent.py"
+      ],
+      "dependencies": ["core/executor.py", "core/session_memory.py", "olmx_client.py", "config.py"],
+      "purpose": "Orchestrate multiple specialized agents (Plan, Explore, General, etc.) to complete tasks through collaborative dialogue"
+    },
+    {
+      "name": "CoreEngine",
+      "description": "Core execution engine for the agent system",
+      "entry_file": "core/executor.py",
+      "core_files": [
+        "core/executor.py",
+        "core/session_memory.py",
+        "core/compact_system.py",
+        "core/micro_compact.py"
+      ],
+      "dependencies": ["core/grouping.py", "olmx_client.py", "config.py"],
+      "purpose": "Execute agent tasks, manage conversation context, and handle context compression"
+    },
+    {
+      "name": "OLMxClient",
+      "description": "LLM client wrapper for API compatibility",
+      "entry_file": "olmx_client.py",
+      "core_files": [],
+      "dependencies": [],
+      "purpose": "Provide LangChain-compatible LLM interface supporting Anthropic and OpenAI providers"
+    },
+    {
+      "name": "ContextCompression",
+      "description": "Automated context compression for managing conversation history",
+      "entry_file": "core/compact_system.py",
+      "core_files": [
+        "core/compact_system.py",
+        "core/micro_compact.py",
+        "utils.py"
+      ],
+      "dependencies": ["config.py"],
+      "purpose": "Compress conversation history using AI summarization and micro-compaction to stay within token limits"
+    },
+    {
+      "name": "cc-mini",
+      "description": "Claude Code minimal harness implementation",
+      "entry_file": "cc-mini/src/core/main.py",
+      "core_files": [
+        "cc-mini/src/core/main.py",
+        "cc-mini/src/core/engine.py",
+        "cc-mini/src/core/llm.py",
+        "cc-mini/src/core/config.py",
+        "cc-mini/src/core/context.py",
+        "cc-mini/src/core/commands.py",
+        "cc-mini/src/core/session.py",
+        "cc-mini/src/core/compact.py",
+        "cc-mini/src/core/coordinator.py",
+        "cc-mini/src/core/worker_manager.py",
+        "cc-mini/src/core/permissions.py",
+        "cc-mini/src/core/cost_tracker.py",
+        "cc-mini/src/core/_keylistener.py"
+      ],
+      "dependencies": ["cc-mini/src/core/buddy/", "cc-mini/src/core/tools/"],
+      "purpose": "Complete Claude Code implementation with REPL, tools, skills, and session persistence"
+    },
+    {
+      "name": "BuddyCompanion",
+      "description": "Interactive AI companion pet in terminal",
+      "entry_file": "cc-mini/src/core/buddy/companion.py",
+      "core_files": [
+        "cc-mini/src/core/buddy/types.py",
+        "cc-mini/src/core/buddy/storage.py",
+        "cc-mini/src/core/buddy/sprites.py",
+        "cc-mini/src/core/buddy/render.py",
+        "cc-mini/src/core/buddy/prompt.py",
+        "cc-mini/src/core/buddy/commands.py",
+        "cc-mini/src/core/buddy/animator.py"
+      ],
+      "dependencies": ["cc-mini/src/core/buddy/poke_game/"],
+      "purpose": "Provide an AI pet with personality, stats, mood, and interactive gameplay (Pokemon-inspired)"
+    },
+    {
+      "name": "POKEMONGame",
+      "description": "Interactive Pokemon game embedded in Buddy",
+      "entry_file": "cc-mini/src/core/buddy/poke_game/__init__.py",
+      "core_files": [
+        "cc-mini/src/core/buddy/poke_game/types.py",
+        "cc-mini/src/core/buddy/poke_game/state.py",
+        "cc-mini/src/core/buddy/poke_game/render.py",
+        "cc-mini/src/core/buddy/poke_game/persistence.py",
+        "cc-mini/src/core/buddy/poke_game/narrator.py",
+        "cc-mini/src/core/buddy/poke_game/commands.py",
+        "cc-mini/src/core/buddy/poke_game/battle.py",
+        "cc-mini/src/core/buddy/poke_game/badges.py",
+        "cc-mini/src/core/buddy/poke_game/lockfile.py",
+        "cc-mini/src/core/buddy/poke_game/events.py",
+        "cc-mini/src/core/buddy/poke_game/loop.py"
+      ],
+      "dependencies": [],
+      "purpose": "Full Pokemon game with creature stats, battles, badges, and save/load functionality"
+    },
+    {
+      "name": "ToolSystem",
+      "description": "Built-in tool implementations for agent interaction",
+      "entry_file": "cc-mini/src/core/tools/__init__.py",
+      "core_files": [
+        "cc-mini/src/core/tools/bash.py",
+        "cc-mini/src/core/tools/file_read.py",
+        "cc-mini/src/core/tools/file_write.py",
+        "cc-mini/src/core/tools/file_edit.py",
+        "cc-mini/src/core/tools/glob.py",
+        "cc-mini/src/core/tools/grep.py",
+        "cc-mini/src/core/tools/ask_user.py",
+        "cc-mini/src/core/tools/agent.py",
+        "cc-mini/src/core/tools/plan_tools.py"
+      ],
+      "dependencies": ["cc-mini/src/core/permissions.py"],
+      "purpose": "Provide file operations, bash execution, and pattern matching with permission-based approval"
+    },
+    {
+      "name": "SessionManagement",
+      "description": "Session persistence and resume functionality",
+      "entry_file": "cc-mini/src/core/session.py",
+      "core_files": [
+        "cc-mini/src/core/session.py",
+        "cc-mini/src/core/worker_manager.py",
+        "cc-mini/src/core/permissions.py",
+        "cc-mini/src/core/_keylistener.py"
+      ],
+      "dependencies": [],
+      "purpose": "Save conversation sessions and allow resuming from checkpoints"
+    },
+    {
+      "name": "ContextSystem",
+      "description": "Top-level package containing all components",
+      "entry_file": "__init__.py",
+      "core_files": [
+        "__init__.py",
+        "main.py",
+        "create.py",
+        "olmx_client.py",
+        "config.py",
+        "utils.py"
+      ],
+      "dependencies": [
+        "agents/",
+        "core/",
+        "cc-mini/"
+      ],
+      "purpose": "Main package entry point that integrates all sub-systems"
+    }
+  ]
+}

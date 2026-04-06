@@ -1,0 +1,55 @@
+{
+  "repo_root": "/Users/huguoqing/zzzhu/code/exp/RAG/project1/context_system",
+  "scan_date": "2026-04-06",
+  "repository_name": "context_system",
+  "description": "Multi-agent RAG system with context compression, agent orchestration, and buddy companion system",
+  "top_level_dirs": [
+    "agents",
+    "core",
+    "cc-mini",
+    "scripts",
+    "tools",
+    "analyses"
+  ],
+  "entry_files": [
+    "main.py",
+    "create.py",
+    "olmx_client.py",
+    "config.py"
+  ],
+  "config_files": [
+    "config.py",
+    "cc-mini/pyproject.toml"
+  ],
+  "core_runtime_files": [
+    "core/session_memory.py",
+    "core/executor.py",
+    "core/compact_system.py",
+    "core/micro_compact.py",
+    "core/grouping.py"
+  ],
+  "module_groups": {
+    "agents": {
+      "description": "Agent system with different roles for task orchestration",
+      "entry_file": "agents/__init__.py",
+      "agents": ["plan_agent", "explore_agent", "general_agent", "verification_agent", "guide_agent", "statusline_agent", "coordinator_agent"]
+    },
+    "core": {
+      "description": "Core RAG and agent execution logic",
+      "entry_file": "core/__init__.py"
+    },
+    "cc-mini": {
+      "description": "Claude Code minimal harness implementation",
+      "entry_file": "cc-mini/src/core/main.py",
+      "src_root": "cc-mini/src/core/"
+    },
+    "tools": {
+      "description": "Tool implementations for agent interaction",
+      "tools": ["bash_tool", "file_tool"]
+    },
+    "scripts": {
+      "description": "Utility scripts",
+      "scripts": ["generate_scan_files"]
+    }
+  }
+}

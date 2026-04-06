@@ -1,0 +1,53 @@
+{
+  "version": "00_repo_scan",
+  "timestamp": "2026-04-06",
+  "root_path": "/Users/huguoqing/zzzhu/code/exp/RAG/project1/context_system",
+  "scan_path": "code-reading-notes/00_repo_scan",
+  "status": "completed",
+  "files": [
+    {
+      "path": "code-reading-notes/00_repo_scan/repo_snapshot.json",
+      "type": "data",
+      "description": "Repository structure snapshot with directory tree, entry files, config files, core runtime files, and module groups"
+    },
+    {
+      "path": "code-reading-notes/00_repo_scan/repo_overview.md",
+      "type": "summary",
+      "description": "Human-readable repository overview explaining what the project does, which files to read first, which directories are core vs peripheral, and next best skill"
+    },
+    {
+      "path": "code-reading-notes/00_repo_scan/file_manifest.json",
+      "type": "metadata",
+      "description": "Complete file listing organized by directory with descriptions"
+    },
+    {
+      "path": "code-reading-notes/00_repo_scan/reading_order.md",
+      "type": "guide",
+      "description": "Recommended file reading order with phases (Core Structure, cc-mini, Cross-Reference)"
+    },
+    {
+      "path": "code-reading-notes/00_repo_scan/module_candidates.json",
+      "type": "data",
+      "description": "Module groupings with names, descriptions, entry files, core files, dependencies, and purposes"
+    },
+    {
+      "path": "code-reading-notes/manifest.json",
+      "type": "index",
+      "description": "Manifest pointing to 00_repo_scan as part of the code-reading-notes hierarchy"
+    },
+    {
+      "path": "code-reading-notes/TODO.md",
+      "type": "meta",
+      "description": "TODO list with completed items and next recommended steps"
+    },
+    {
+      "path": "code-reading-notes/progress.md",
+      "type": "meta",
+      "description": "Progress tracking for the repo scan"
+    }
+  ],
+  "next_step": {
+    "skill": "/project-architecture",
+    "reason": "Generate full project architecture map to understand module dependencies and data flow"
+  }
+}
